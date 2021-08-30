@@ -34,8 +34,8 @@ app.get("/health-check", (req,res)=>{
 
 app.use('/users',userRoute)
 
-app.listen(3000, () => {
-    console.log('Server is listening on 3000')
+app.listen(8080, () => {
+    console.log('Server is listening on 8080')
 });
 };
 start();
