@@ -29,7 +29,7 @@ app.use(helmet());
 app.use(morgan('common'));
 
 app.get("/health-check", (req,res)=>{
-    res.json("success")
+    res.send("success")
 })
 
 app.use('/users',userRoute)
