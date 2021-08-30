@@ -28,7 +28,7 @@ app.use(express.json());
 app.use(helmet());
 app.use(morgan('common'));
 
-app.get("/health-check", (req,res)=>{
+app.get("/", (req,res)=>{
     res.send("success")
 })
 
