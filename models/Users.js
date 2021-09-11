@@ -30,7 +30,13 @@ const UserSchema = new mongoose.Schema({
     followings : {
         type: Array,
         default: [],
-    }
+    },
+    description:{
+        type: String,
+    },
+    linkedURL:{
+        type: String,
+    },
 })
 
 module.exports = mongoose.model('Users', UserSchema);
