@@ -3,10 +3,10 @@ const app = express();
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const helmet = require('helmet');
-const morgan = require('morgan');
 const userRoute = require('./routes/users')
-
 dotenv.config();
+
+const logger = require("./utils/logger")
 const start = async () => {
     
     if (!process.env.MONGO_URL) {
@@ -19,23 +19,26 @@ const start = async () => {
             useCreateIndex: true,
             useFindAndModify: false, 
         });
-        console.log('Server connected to MongoDb !');
+        logger.info('Server connected to MongoDb !');
     } catch (err) {
-        console.error(err);
+        logger.error(err);
     }
+    mongoose.set('debug', true)
+
 
 app.use(express.json());
 app.use(helmet());
-app.use(morgan('common'));
 
-app.get("/health-check", (req,res)=>{
-    res.json("success")
+app.get("/", (req,res)=>{
+    res.send("success")
+    logger.info("Health Check Successful");
 })
 
 app.use('/users',userRoute)
 
-app.listen(3000, () => {
-    console.log('Server is listening on 3000')
-});
+app.listen(process.env.PORT || 3000, function(){
+    logger.info("Server is listening on port 3000");
+  });
+  
 };
 start();
