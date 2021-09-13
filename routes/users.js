@@ -33,6 +33,9 @@ router.post("/register",async (req,res)=>{
         logger.error(error)
     }
 })
+router.get("/register", async(req,res)=>{
+    res.send("register page")
+})
 
 
 //login
@@ -49,11 +52,13 @@ router.post("/login", async (req,res)=>{
         logger.error(error)
     }
 })
+router.get("/login", async(req,res)=>{
+    res.send("login page")
+})
 
 //Update User
 router.put('/:id', async(req,res)=>{
     if(req.body.userId === req.params.id){
-        console.log("enter")
         try{
             const user = await User.findByIdAndUpdate(req.params.id, {
                 $set: req.body,
@@ -118,6 +123,9 @@ router.post('/requestResetPassword', async(req,res)=>{
         res.send("An error occured");
         logger.error(error);
     }
+})
+router.get("/requestResetPassword", async(req,res)=>{
+    res.send("Password reset page")
 })
 
 // password reset
