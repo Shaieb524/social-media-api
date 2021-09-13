@@ -114,7 +114,7 @@ router.post('/requestResetPassword', async(req,res)=>{
             }).save();
         }
 
-        const link = `localhost:3000/password-reset/${user._id}/${token.token}`;
+        const link = `https://originalsapi.herokuapp.com/password-reset/${user._id}/${token.token}`;
         await sendEmail(user.email, "Password reset", link);
 
         res.send("password reset link sent to your email account");
