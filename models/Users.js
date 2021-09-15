@@ -39,7 +39,8 @@ const UserSchema = new mongoose.Schema({
         type: String,
     },
     linkedURL:{
-        type: String,
+        type: Array,
+        default: [],
     },
 })
 
