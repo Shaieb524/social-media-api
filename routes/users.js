@@ -38,7 +38,7 @@ router.get("/walletConnect", async(req,res)=>{
 })
 
 
-login
+//login
 router.post("/login", async (req,res)=>{
     try {
         const user = await User.findOne({walletAddress : req.body.walletAddress})
