@@ -6,7 +6,7 @@ const UserSchema = new mongoose.Schema({
         unique: true,
     },
     isWalletConnected: {
-        type: bool,
+        type: Boolean,
         default: false,
     },
     walletAddress :{
