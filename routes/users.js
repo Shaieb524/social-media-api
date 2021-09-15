@@ -11,41 +11,41 @@ router.get('/',(req,res)=>{
     res.send("users Page")
 })
 
-//register
-router.post("/register",async (req,res)=>{
+//WalletConnect
+router.post("/walletConnect",async (req,res)=>{
    
     try {
         //generate hashedpassword
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(req.body.password, salt);
+        // const salt = await bcrypt.genSalt(10);
+        // const hashedPassword = await bcrypt.hash(req.body.password, salt);
          
        // create new user
         const newUser  = await new User({
-            username: req.body.username,
-            password: hashedPassword,
-            email: req.body.email,
+            walletAddress: req.body.walletAddress,
+            isWalletConnected: true,
        })
        //save user
         const user = await newUser.save();
+        
         res.status(200).json(user)
-        logger.info("registration successful")
+        logger.info("Wallet connection successful")
     } catch (error) {
         logger.error(error)
     }
 })
-router.get("/register", async(req,res)=>{
-    res.send("register page")
+router.get("/walletConnect", async(req,res)=>{
+    res.send("wallet connection page")
 })
 
 
-//login
+login
 router.post("/login", async (req,res)=>{
     try {
-        const user = await User.findOne({email : req.body.email})
+        const user = await User.findOne({walletAddress : req.body.walletAddress})
         !user && res.status(400).json('user not found')
 
-        const validPassword = await bcrypt.compare(req.body.password, user.password)
-        !validPassword && res.status(400).json('wrong password')
+        // const validPassword = await bcrypt.compare(req.body.password, user.password)
+        // !validPassword && res.status(400).json('wrong password')
         logger.info("login successful")
         res.status(200).json(user)
     } catch (error) {
@@ -70,6 +70,9 @@ router.put('/:id', async(req,res)=>{
            logger.error(error)
         }
     }
+})
+router.get('/:id', async(req,res)=>{
+
 })
 //delete User
 router.delete('/:id', async(req,res)=>{
