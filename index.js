@@ -19,11 +19,11 @@ const start = async () => {
             useCreateIndex: true,
             useFindAndModify: false, 
         });
-        logger.info('Server connected to MongoDb !');
+        console.log('Server connected to MongoDb !');
     } catch (err) {
         logger.error(err);
     }
-    mongoose.set('debug', true)
+    //  mongoose.set('debug', true)
 
 
 app.use(express.json());
@@ -37,7 +37,7 @@ app.get("/", (req,res)=>{
 app.use('/users',userRoute)
 
 app.listen(process.env.PORT || 3000, function(){
-    logger.info("Server is listening on port 3000");
+    console.log("Server is listening on port 3000");
   });
   
 };
