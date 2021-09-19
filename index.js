@@ -1,11 +1,11 @@
 const express = require('express');
 const app = express();
+const cors = require('cors');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const helmet = require('helmet');
 const userRoute = require('./routes/users')
 dotenv.config();
-
 const logger = require("./utils/logger")
 const start = async () => {
     
@@ -28,6 +28,7 @@ const start = async () => {
 
 app.use(express.json());
 app.use(helmet());
+app.use(cors())
 
 app.get("/", (req,res)=>{
     res.send("success")

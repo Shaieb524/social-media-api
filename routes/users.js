@@ -6,6 +6,7 @@ const JWT = require("jsonwebtoken");
 const randomstring = require("randomstring");
 const sendEmail = require("../utils/sendEmail");
 const logger = require("../utils/logger")
+const superheroes = require('superheroes');
 
 router.get('/',(req,res)=>{
     res.send("users Page")
@@ -15,7 +16,6 @@ router.get('/',(req,res)=>{
 router.post("/walletConnect/:referralLink?",async (req,res)=>{
    const referralLink = req.params.referralLink;
    if(referralLink){
-       console.log(referralLink)
        const rUser = await User.findOne({referralLink:referralLink})
        !rUser && res.status(400).json('incorrect referral link')
        rUser.referralCount=rUser.referralCount+1;
@@ -27,22 +27,22 @@ router.post("/walletConnect/:referralLink?",async (req,res)=>{
         const newUser  = await new User({
             walletAddress: req.body.walletAddress,
             isWalletConnected: true,
+            username: superheroes.random(),
             referralLink: randomstring.generate({
-                length: 5,
+                length: 10,
                 charset: 'alphabetic'
               }),
        })
        //save user
-      
         const user = await newUser.save();
         
         res.status(200).json(user)
         logger.info("Wallet connection successful")
     } catch (error) {
-        logger.error(error)
+        logger.error(error.message)
     }
 })
-router.get("/walletConnect/:referralLink?", async(req,res)=>{
+router.get("/walletConnect/referralLink?", async(req,res)=>{
     res.send("wallet connection page")
 })
 
