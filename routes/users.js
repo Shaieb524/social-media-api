@@ -42,7 +42,7 @@ router.post("/walletConnect/:referralLink?",async (req,res)=>{
         logger.error(error.message)
     }
 })
-router.get("/walletConnect/referralLink?", async(req,res)=>{
+router.get('/walletConnect/:referralLink?', async(req,res)=>{
     res.send("wallet connection page")
 })
 
