@@ -10,6 +10,7 @@ const UserSchema = new mongoose.Schema({
     },
     walletAddress :{
         type: String,
+        unique: true,
     },
     email :{
         type: String,
