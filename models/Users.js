@@ -39,10 +39,10 @@ const UserSchema = new mongoose.Schema({
         type: Array,
         default: [],
     },
-    referralLink: {
-        type: String,
-        unique: true,
-    },
+    // referralLink: {
+    //     type: String,
+    //     unique: true,
+    // },
     referralCount:{
         type: Number,
         default: 0,
