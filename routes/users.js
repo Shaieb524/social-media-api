@@ -6,6 +6,9 @@ const randomstring = require("randomstring");
 const sendEmail = require("../utils/sendEmail");
 const logger = require("../utils/logger")
 const superheroes = require('superheroes');
+const multer = require('multer');
+const { profile } = require("../utils/logger");
+const upload = multer({dest: 'uploads/'})
 
 router.get('/',(req,res)=>{
     res.send("users Page")
@@ -16,14 +19,20 @@ router.post("/walletConnect/:ref?",async (req,res)=>{
     const ref = req.query.ref
    if(ref){
        const rUser = await User.findOne({username:ref})
-       !rUser && res.status(400).json('incorrect referral link')
-       rUser.referralCount=rUser.referralCount+1;
-       await rUser.save();
-    
+       if(rUser){
+        rUser.referralCount=rUser.referralCount+1;
+        await rUser.save();
+       }
+       else{
+        res.status(400).json('incorrect referral link')
+       }
+       
    }
     try {
         const username = superheroes.random();
        // create new user
+       const eUser = await User.findOne({walletAddress:req.body.walletAddress})
+       if(!eUser){
         const newUser  = await new User({
             walletAddress: req.body.walletAddress,
             isWalletConnected: true,
@@ -34,6 +43,10 @@ router.post("/walletConnect/:ref?",async (req,res)=>{
         
         res.status(200).json(user)
         logger.info("Wallet connection successful")
+    }
+    else{
+        res.status(200).json(eUser)
+    }
     } catch (error) {
         console.log(error)
     }
@@ -60,6 +73,27 @@ router.get("/login", async(req,res)=>{
     res.send("login page")
 })
 
+// router.put('/profile/:id', upload.single('profilePic'), async (req,res)=>{
+//     if(req.body.userId === req.params.id){
+//         try{
+//             console.log(req.file.path)
+//             const user = await User.findByIdAndUpdate(req.params.id, {
+//                 profilePic: req.file.path,
+//                 email : req.body.email,
+//                 username: req.body.username,
+                
+//             })
+//             console.log(req.file.path)
+
+//             res.status(200).json("Account Updated")
+//             logger.info("Account Updated")
+//         }
+//         catch(error){
+//            console.log(error)
+//         }
+//     }
+// })
+
 //Update User
 router.put('/:id', async(req,res)=>{
     if(req.body.userId === req.params.id){
@@ -75,9 +109,9 @@ router.put('/:id', async(req,res)=>{
         }
     }
 })
-router.get('/:id', async(req,res)=>{
-    res.send("update")
-})
+// router.get('/:id', async(req,res)=>{
+//     res.send("update")
+//})
 //delete User
 router.delete('/:id', async(req,res)=>{
     if(req.body.userId === req.params.id){

@@ -27,6 +27,7 @@ const start = async () => {
 
 
 app.use(express.json());
+// app.use('/uploads')
 app.use(helmet());
 app.use(cors())
 
