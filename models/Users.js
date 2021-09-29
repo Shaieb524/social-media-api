@@ -4,6 +4,9 @@ const UserSchema = new mongoose.Schema({
     username :{
         type: String,
     },
+    displayName:{
+        type: String,
+    },
     isWalletConnected: {
         type: Boolean,
         default: false,
