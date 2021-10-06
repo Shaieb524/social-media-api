@@ -55,45 +55,6 @@ router.get('/walletConnect/:referralLink?', async(req,res)=>{
     res.send("wallet connection page")
 })
 
-//login
-router.post("/login", async (req,res)=>{
-    try {
-        const user = await User.findOne({walletAddress : req.body.walletAddress})
-        !user && res.status(400).json('user not found')
-
-        // const validPassword = await bcrypt.compare(req.body.password, user.password)
-        // !validPassword && res.status(400).json('wrong password')
-        logger.info("login successful")
-        res.status(200).json(user)
-    } catch (error) {
-        logger.error(error)
-    }
-})
-router.get("/login", async(req,res)=>{
-    res.send("login page")
-})
-
-// router.put('/profile/:id', upload.single('profilePic'), async (req,res)=>{
-//     if(req.body.userId === req.params.id){
-//         try{
-//             console.log(req.file.path)
-//             const user = await User.findByIdAndUpdate(req.params.id, {
-//                 profilePic: req.file.path,
-//                 email : req.body.email,
-//                 username: req.body.username,
-                
-//             })
-//             console.log(req.file.path)
-
-//             res.status(200).json("Account Updated")
-//             logger.info("Account Updated")
-//         }
-//         catch(error){
-//            console.log(error)
-//         }
-//     }
-// })
-
 //Update User
 router.put('/:id', async(req,res)=>{
     if(req.body.userId === req.params.id){
@@ -128,14 +89,36 @@ router.delete('/:id', async(req,res)=>{
     }
 })
 //get user
-router.get('/:id', async (req,res)=>{
+router.get('/:username', async (req,res)=>{
     try{
-        const user = await User.findById(req.params.id);
+        const user = await User.findOne({username: req.params.username});
         res.status(200).json(user)
     }
     catch(error){
         res.status(500).json(error);
-        logger.error(error)
+        console.log(error)
+    }
+})
+
+router.post('/search', async (req,res)=>{
+    try {
+        if(req.body.username){
+        const user = await User.find({ "username" : { $regex: req.body.username, $options: 'i' } })
+        if(user.length=="0"){
+            res.status(400).json("user not found")
+        }
+        res.status(200).json(user)
+
+      }
+      if(req.body.walletAddress){
+        const user = await User.find({ "walletAddress" : { $regex: req.body.walletAddress, $options: 'i' } })
+        if(user.length=="0"){
+            res.status(400).json("user not found")
+        }
+        res.status(200).json(user)
+    }
+    } catch (error) {
+        console.log(error)
     }
 })
 
