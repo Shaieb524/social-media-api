@@ -29,7 +29,7 @@ router.post("/walletConnect/:ref?",async (req,res)=>{
        
    }
     try {
-        const username = superheroes.random();
+        const username = superheroes.random()
        // create new user
        const eUser = await User.findOne({walletAddress:req.body.walletAddress})
        if(!eUser){
@@ -91,7 +91,8 @@ router.delete('/:id', async(req,res)=>{
 //get user
 router.get('/:username', async (req,res)=>{
     try{
-        const user = await User.findOne({username: req.params.username});
+        const username = req.params.username.toLowerCase()
+        const user = await User.findOne({username : { $regex : new RegExp(username, "i")} });
         res.status(200).json(user)
     }
     catch(error){
