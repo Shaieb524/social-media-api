@@ -101,21 +101,14 @@ router.get('/:username', async (req,res)=>{
 
 router.post('/search', async (req,res)=>{
     try {
-        if(req.body.username){
-        const user = await User.find({ "username" : { $regex: req.body.username, $options: 'i' } })
+        const user = await User.find({$or: [{'username': {$regex: req.body.search, $options: 'i'}},
+                                            {'walletAddress': {$regex: req.body.search, $options: 'i'}}] })
         if(user.length=="0"){
-            res.status(400).json("user not found")
+               res.status(400).json("user not found")
         }
-        res.status(200).json(user)
-
-      }
-      if(req.body.walletAddress){
-        const user = await User.find({ "walletAddress" : { $regex: req.body.walletAddress, $options: 'i' } })
-        if(user.length=="0"){
-            res.status(400).json("user not found")
+        else{
+            res.status(200).json(user)
         }
-        res.status(200).json(user)
-    }
     } catch (error) {
         console.log(error)
     }
