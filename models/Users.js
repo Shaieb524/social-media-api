@@ -3,15 +3,20 @@ const mongoose = require('mongoose');
 const UserSchema = new mongoose.Schema({
     username :{
         type: String,
-        unique: true,
     },
-
-    password:{
+    displayName:{
         type: String,
+    },
+    isWalletConnected: {
+        type: Boolean,
+        default: false,
+    },
+    walletAddress :{
+        type: String,
+        unique: true,
     },
     email :{
         type: String,
-        unique: true,
     },
     profilePic : {
         type: String,
@@ -35,8 +40,17 @@ const UserSchema = new mongoose.Schema({
         type: String,
     },
     linkedURL:{
-        type: String,
+        type: Array,
+        default: [],
     },
+    // referralLink: {
+    //     type: String,
+    //     unique: true,
+    // },
+    referralCount:{
+        type: Number,
+        default: 0,
+    }
 })
 
 module.exports = mongoose.model('Users', UserSchema);
