@@ -46,7 +46,7 @@ router.post("/walletConnect/:ref?",async (req,res)=>{
         res.status(200).json(eUser)
     }
     } catch (error) {
-        console.log(error)
+        logger.error(error)
     }
 })
 router.get('/walletConnect/:referralLink?', async(req,res)=>{
@@ -95,7 +95,7 @@ router.get('/:username', async (req,res)=>{
     }
     catch(error){
         res.status(500).json(error);
-        console.log(error)
+        logger.error(error)
     }
 })
 
@@ -110,7 +110,7 @@ router.post('/search', async (req,res)=>{
             res.status(200).json(user)
         }
     } catch (error) {
-        console.log(error)
+        logger.error(error)
     }
 })
 
