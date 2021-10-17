@@ -33,7 +33,7 @@ app.use(express.urlencoded({limit: '50mb', extended:'true'}));
 app.use(helmet());
 app.use(cors())
 
-app.get("/", (req,res)=>{
+app.get("/health-check", (req,res)=>{
     res.send("success")
     logger.info("Health Check Successful");
 })
