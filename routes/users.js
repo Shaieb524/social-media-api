@@ -101,8 +101,9 @@ router.get('/:username', async (req,res)=>{
 
 router.post('/search', async (req,res)=>{
     try {
-        const user = await User.find({$or: [{'username': {$regex: req.body.search, $options: 'i'}},
-                                            {'walletAddress': {$regex: req.body.search, $options: 'i'}}] })
+        const user = await User.find({$or: [{'username': {$regex: req.body.username, $options: 'i'}},
+                                            {'walletAddress': {$regex: req.body.username, $options: 'i'}}] })
+
         if(user.length=="0"){
                res.status(400).json("user not found")
         }
