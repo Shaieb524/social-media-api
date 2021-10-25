@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const NFT = require('./NFT').schema
 
 const UserSchema = new mongoose.Schema({
     username :{
@@ -50,7 +51,8 @@ const UserSchema = new mongoose.Schema({
     referralCount:{
         type: Number,
         default: 0,
-    }
+    },
+    NFTs:[NFT]
 })
 
 module.exports = mongoose.model('Users', UserSchema);
