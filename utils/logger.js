@@ -38,3 +38,27 @@ module.exports = createLogger({
         })
     ]
 });
+
+
+// router.post('/NFTtag', async(req,res)=>{
+//     try{
+//         const user = await User.findOne({walletAddress: req.body.owner})
+//         if(!user){
+//             res.status(404).json('user does not exists')
+//         }
+//         else{
+//             const newNFT  = await new NFT({
+//                 owner: req.body.walletAddress,
+//             })    
+//             const nft = await newNFT.save();
+//         await nft.updateOne( {$set: req.body},)
+//         const uNFT = await NFT.find({owner:req.body.owner })
+//         console.log(uNFT)
+//         await user.update({NFts:uNFT})        
+//         res.status(200).json("NFT added")
+//     }
+// }
+//     catch(error){
+//         console.log(error)
+//     }
+// })

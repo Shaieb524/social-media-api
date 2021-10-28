@@ -123,7 +123,8 @@ router.post('/NFTtag', async(req,res)=>{
             })    
             const nft = await newNFT.save();
         await nft.updateOne( {$set: req.body},)
-        await user.updateOne({NFTs:nft})
+        const uNFT = await NFT.find({owner:req.body.owner })
+        await user.updateOne({NFTs: uNFT})
         res.status(200).json("NFT added")
     }
 }
@@ -142,6 +143,18 @@ router.get('/NFTsearch/:tag', async(req,res)=>{
     catch(error){
         console.log(error)
     }
+})
+
+router.get('/TaggedNFTs/:owner', async(req,res)=>{
+    const owner = req.params.owner
+    const user = await User.findOne({walletAddress:owner})
+    
+    const tagged = user.NFTs.filter((t)=>{
+        if(t.tags.length !== 0){
+            return t.tags
+        }
+    })
+    res.status(200).json(tagged)
 })
 
 // // refer

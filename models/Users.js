@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
-const NFT = require('./NFT').schema
-
-const UserSchema = new mongoose.Schema({
+const Schema = mongoose.Schema
+const NFTs = require('./NFT').schema
+const UserSchema = new Schema({
     username :{
         type: String,
     },
@@ -52,7 +52,7 @@ const UserSchema = new mongoose.Schema({
         type: Number,
         default: 0,
     },
-    NFTs:[NFT]
+    NFTs:[NFTs]
 })
 
 module.exports = mongoose.model('Users', UserSchema);
