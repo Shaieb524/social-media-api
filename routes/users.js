@@ -1,12 +1,9 @@
 const router = require("express").Router();
 const User = require('../models/Users');
-const JWT = require("jsonwebtoken");
-const sendEmail = require("../utils/sendEmail");
+const NFT = require('../models/NFT')
 const logger = require("../utils/logger")
 const superheroes = require('superheroes');
-const multer = require('multer');
 const { profile } = require("../utils/logger");
-const upload = multer({dest: 'uploads/'})
 
 router.get('/',(req,res)=>{
     res.send("users Page")
@@ -22,7 +19,7 @@ router.post("/walletConnect/:ref?",async (req,res)=>{
         await rUser.save();
        }
        else{
-        res.status(400).json('incorrect referral link')
+        res.status(404).json('incorrect referral link')
        }
        
    }
@@ -103,9 +100,8 @@ router.post('/search', async (req,res)=>{
     try {
         const user = await User.find({$or: [{'username': {$regex: req.body.username, $options: 'i'}},
                                             {'walletAddress': {$regex: req.body.username, $options: 'i'}}] })
-
         if(user.length=="0"){
-               res.status(400).json("user not found")
+               res.status(404).json("user not found")
         }
         else{
             res.status(200).json(user)
@@ -113,6 +109,52 @@ router.post('/search', async (req,res)=>{
     } catch (error) {
         logger.error(error)
     }
+})
+
+router.post('/NFTtag', async(req,res)=>{
+    try{
+        const user = await User.findOne({walletAddress: req.body.owner})
+        if(!user){
+            res.status(404).json('user does not exists')
+        }
+        else{
+            const newNFT  = await new NFT({
+                owner: req.body.walletAddress,
+            })    
+            const nft = await newNFT.save();
+        await nft.updateOne( {$set: req.body},)
+        const uNFT = await NFT.find({owner:req.body.owner })
+        await user.updateOne({NFTs: uNFT})
+        res.status(200).json("NFT added")
+    }
+}
+    catch(error){
+        console.log(error)
+    }
+})
+
+router.get('/NFTsearch/:tag', async(req,res)=>{
+    try{
+        const nfts = await NFT.find({tags: {"$in": [req.params.tag]}}) 
+        if(nfts){
+        res.status(200).json(nfts)
+        }
+    }
+    catch(error){
+        console.log(error)
+    }
+})
+
+router.get('/TaggedNFTs/:owner', async(req,res)=>{
+    const owner = req.params.owner
+    const user = await User.findOne({walletAddress:owner})
+    
+    const tagged = user.NFTs.filter((t)=>{
+        if(t.tags.length !== 0){
+            return t.tags
+        }
+    })
+    res.status(200).json(tagged)
 })
 
 // // refer
