@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const User = require('../models/Users');
 const NFT = require('../models/NFT')
+const Newsfeed = require('../models/Newsfeed')
 const logger = require("../utils/logger")
 const superheroes = require('superheroes');
 const { profile } = require("../utils/logger");
@@ -95,7 +96,7 @@ router.get('/:username', async (req,res)=>{
         logger.error(error)
     }
 })
-
+//search via Username
 router.post('/search', async (req,res)=>{
     try {
         const user = await User.find({$or: [{'username': {$regex: req.body.username, $options: 'i'}},
@@ -111,6 +112,7 @@ router.post('/search', async (req,res)=>{
     }
 })
 
+//Tag NFTs
 router.post('/NFTtag', async(req,res)=>{
     try{
         const user = await User.findOne({walletAddress: req.body.owner})
@@ -119,7 +121,7 @@ router.post('/NFTtag', async(req,res)=>{
         }
         else{
             const newNFT  = await new NFT({
-                owner: req.body.walletAddress,
+                owner: req.body.owner,
             })    
             const nft = await newNFT.save();
         await nft.updateOne( {$set: req.body},)
@@ -133,6 +135,7 @@ router.post('/NFTtag', async(req,res)=>{
     }
 })
 
+//Search via NFT tags
 router.get('/NFTsearch/:tag', async(req,res)=>{
     try{
         const nfts = await NFT.find({tags: {"$in": [req.params.tag]}}) 
@@ -145,6 +148,7 @@ router.get('/NFTsearch/:tag', async(req,res)=>{
     }
 })
 
+//Return tagged NFTs of an owner
 router.get('/TaggedNFTs/:owner', async(req,res)=>{
     const owner = req.params.owner
     const user = await User.findOne({walletAddress:owner})
@@ -155,6 +159,29 @@ router.get('/TaggedNFTs/:owner', async(req,res)=>{
         }
     })
     res.status(200).json(tagged)
+})
+
+//Newsfeed
+router.post('/newsfeed', async(req,res)=>{
+    try{
+        const user = await User.findOne({walletAddress:req.body.userAddress})
+        if(!user){
+            res.status(404).json('user does not exists')
+        }
+        else{
+            const newNewsfeed  = await new Newsfeed({
+                userAddress: req.body.userAddress,
+                transactionHash: req.body.transactionHash,
+                description: req.body.description
+            })    
+            const newsfeed = await newNewsfeed.save();
+        await user.updateOne({$push:{Newsfeed: newsfeed}})
+        res.status(200).json("Newsfeed added")
+    }
+    }
+    catch(error){
+        console.log(error)
+    }
 })
 
 // // refer
