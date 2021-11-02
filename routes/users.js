@@ -184,6 +184,10 @@ router.post('/newsfeed', async(req,res)=>{
     }
 })
 
+router.get('./newsfeed', async(req,res)=>{
+    res.send('Newsfeed')
+})
+
 // // refer
 // router.post("/refer", async(req,res)=>{
 //     try {
