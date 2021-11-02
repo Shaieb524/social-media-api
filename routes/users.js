@@ -6,7 +6,7 @@ const logger = require("../utils/logger")
 const superheroes = require('superheroes');
 const { profile } = require("../utils/logger");
 
-router.get('/',(req,res)=>{
+router.get('/a',(req,res)=>{
     res.send("users Page")
 })
 
@@ -184,8 +184,10 @@ router.post('/newsfeed', async(req,res)=>{
     }
 })
 
-router.get('/newsfeed', async(req,res)=>{
-    res.send('Newsfeed')
+router.get('/newsfeed/:userAddress', async(req,res)=>{
+    const user = await User.findOne({walletAddress:req.params.userAddress})
+    res.status(200).json(user.Newsfeed)
+
 })
 
 // // refer
