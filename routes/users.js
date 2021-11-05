@@ -184,8 +184,8 @@ router.post('/newsfeed', async(req,res)=>{
     }
 })
 
-router.get('/newsfeed/:userAddress', async(req,res)=>{
-    const user = await User.findOne({walletAddress:req.params.userAddress})
+router.get('/newsfeed/:username', async(req,res)=>{
+    const user = await User.findOne({username:req.params.username})
     res.status(200).json(user.Newsfeed)
 
 })
