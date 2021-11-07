@@ -164,7 +164,7 @@ router.get('/TaggedNFTs/:owner', async(req,res)=>{
 //Newsfeed
 router.post('/newsfeed', async(req,res)=>{
     try{
-        const user = await User.findOne({walletAddress:req.body.userAddress})
+        const user = await User.findOne({username:req.body.username})
         if(!user){
             res.status(404).json('user does not exists')
         }
