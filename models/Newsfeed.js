@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const NewsfeedSchema = new mongoose.Schema({
-    userAddress :{
+    username :{
         type: String,
     },
     transactionHash:{

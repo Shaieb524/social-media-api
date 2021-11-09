@@ -62,7 +62,7 @@ router.put('/:id', async(req,res)=>{
             logger.info("Account Updated")
         }
         catch(error){
-           logger.error(error)
+           console.log(error)
         }
     }
 })
@@ -170,7 +170,7 @@ router.post('/newsfeed', async(req,res)=>{
         }
         else{
             const newNewsfeed  = await new Newsfeed({
-                userAddress: req.body.userAddress,
+                username: req.body.username,
                 transactionHash: req.body.transactionHash,
                 description: req.body.description
             })    
@@ -186,7 +186,15 @@ router.post('/newsfeed', async(req,res)=>{
 
 router.get('/newsfeed/:username', async(req,res)=>{
     const user = await User.findOne({username:req.params.username})
-    res.status(200).json(user.Newsfeed)
+    const followings = user.followings
+    const newsFeed = []
+    for(let i=0; i<followings.length; i++){
+      const news = await Newsfeed.findOne({username:followings[i]})
+      if(news){
+      newsFeed[i]=news;
+      }
+    }
+   res.status(200).json(newsFeed)
 
 })
 
