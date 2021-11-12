@@ -187,11 +187,11 @@ router.post('/newsfeed', async(req,res)=>{
 router.get('/newsfeed/:username', async(req,res)=>{
     const user = await User.findOne({username:req.params.username})
     const followings = user.followings
-    const newsFeed = []
+    var newsFeed = []
     for(let i=0; i<followings.length; i++){
       const news = await Newsfeed.find({username:followings[i]})
       if(news.length!==0){
-      newsFeed[i]=news;
+      newsFeed=newsFeed.concat(news);
       } 
     }
    res.status(200).json(newsFeed)
