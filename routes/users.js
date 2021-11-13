@@ -1,11 +1,12 @@
 const router = require("express").Router();
 const User = require('../models/Users');
 const NFT = require('../models/NFT')
+const Newsfeed = require('../models/Newsfeed')
 const logger = require("../utils/logger")
 const superheroes = require('superheroes');
 const { profile } = require("../utils/logger");
 
-router.get('/',(req,res)=>{
+router.get('/a',(req,res)=>{
     res.send("users Page")
 })
 
@@ -61,7 +62,7 @@ router.put('/:id', async(req,res)=>{
             logger.info("Account Updated")
         }
         catch(error){
-           logger.error(error)
+           console.log(error)
         }
     }
 })
@@ -95,11 +96,11 @@ router.get('/:username', async (req,res)=>{
         logger.error(error)
     }
 })
-
+//search via Username
 router.post('/search', async (req,res)=>{
     try {
-        const user = await User.find({$or: [{'username': {$regex: req.body.username, $options: 'i'}},
-                                            {'walletAddress': {$regex: req.body.username, $options: 'i'}}] })
+        const user = await User.find({$or: [{'username': {$regex: req.body.search, $options: 'i'}},
+                                            {'walletAddress': {$regex: req.body.search, $options: 'i'}}] })
         if(user.length=="0"){
                res.status(404).json("user not found")
         }
@@ -111,6 +112,7 @@ router.post('/search', async (req,res)=>{
     }
 })
 
+//Tag NFTs
 router.post('/NFTtag', async(req,res)=>{
     try{
         const user = await User.findOne({walletAddress: req.body.owner})
@@ -119,7 +121,7 @@ router.post('/NFTtag', async(req,res)=>{
         }
         else{
             const newNFT  = await new NFT({
-                owner: req.body.walletAddress,
+                owner: req.body.owner,
             })    
             const nft = await newNFT.save();
         await nft.updateOne( {$set: req.body},)
@@ -133,6 +135,7 @@ router.post('/NFTtag', async(req,res)=>{
     }
 })
 
+//Search via NFT tags
 router.get('/NFTsearch/:tag', async(req,res)=>{
     try{
         const nfts = await NFT.find({tags: {"$in": [req.params.tag]}}) 
@@ -145,6 +148,7 @@ router.get('/NFTsearch/:tag', async(req,res)=>{
     }
 })
 
+//Return tagged NFTs of an owner
 router.get('/TaggedNFTs/:owner', async(req,res)=>{
     const owner = req.params.owner
     const user = await User.findOne({walletAddress:owner})
@@ -155,6 +159,43 @@ router.get('/TaggedNFTs/:owner', async(req,res)=>{
         }
     })
     res.status(200).json(tagged)
+})
+
+//Newsfeed
+router.post('/newsfeed', async(req,res)=>{
+    try{
+        const user = await User.findOne({username:req.body.username})
+        if(!user){
+            res.status(404).json('user does not exists')
+        }
+        else{
+            const newNewsfeed  = await new Newsfeed({
+                username: req.body.username,
+                transactionHash: req.body.transactionHash,
+                description: req.body.description
+            })    
+            const newsfeed = await newNewsfeed.save();
+        await user.updateOne({$push:{Newsfeed: newsfeed}})
+        res.status(200).json("Newsfeed added")
+    }
+    }
+    catch(error){
+        console.log(error)
+    }
+})
+
+router.get('/newsfeed/:username', async(req,res)=>{
+    const user = await User.findOne({username:req.params.username})
+    const followings = user.followings
+    var newsFeed = []
+    for(let i=0; i<followings.length; i++){
+      const news = await Newsfeed.find({username:followings[i]})
+      if(news.length!==0){
+      newsFeed=newsFeed.concat(news);
+      } 
+    }
+   res.status(200).json(newsFeed)
+
 })
 
 // // refer
