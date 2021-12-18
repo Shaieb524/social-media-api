@@ -30,7 +30,7 @@ export class MainServices {
         return deletedItem
     }
 
-    public async updateItem(id: string, reqItem: any) {
+    public async updateItem(id: string, reqItem: INewsfeed | INft | IUsers ) {
         const updatedItem = await this.serivceModel.findByIdAndUpdate(id, reqItem).exec()
         if (!updatedItem) throw new Error(`error updating item with id ${id}!`)
 
