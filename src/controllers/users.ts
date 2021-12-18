@@ -3,6 +3,7 @@ import MainController from './main'
 import { UsersServices } from '../services/users'
 import { UsersModel } from '../models/users'
 import ErrorValidator from '../utils/error-validator'
+import superheroes from 'superheroes'
 
 class UsersController extends MainController {
     
@@ -15,6 +16,7 @@ class UsersController extends MainController {
         super.setRoutes()
         this.router.route("/:username").get(this.findUserByName);
         this.router.route("/search").post(this.searchUsers);
+        this.router.route("/walletConnect/:ref?").post(this.walletConnect);
     }
 
     private findUserByName = async (req: Request, res: Response) => {
@@ -38,8 +40,43 @@ class UsersController extends MainController {
             res.send(user)
         } catch (e) {
             e instanceof Error
-               ? res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError(e.message))
-               : res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError("Unkown Error happened while getting items"));
+                ? res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError(e.message))
+                : res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError("Unkown Error happened while getting items"));
+        }
+    }
+
+    private walletConnect = async (req: Request, res: Response) => {
+        try {
+
+            if (req.query.ref) {
+                const ref = req.query.ref;
+                const rUser = await UsersModel.findOne({ username: ref });
+                if (rUser) {
+                    rUser.referralCount = rUser.referralCount + 1;
+                    await rUser.save();
+                } else {
+                    res.status(404).json("incorrect referral link");
+                }
+            }
+
+            const existedUser = await UsersModel.findOne({ walletAddress: req.body.walletAddress });
+            if (!existedUser) {
+                const assignedUsername = superheroes.random();
+                const createdUserData = {
+                    walletAddress: req.body.walletAddress,
+                    isWalletConnected: true,
+                    username: assignedUsername.replace(/\s/g, ""),
+                }
+
+                const addedUser = await this.usersService.addItem(createdUserData)
+                res.status(ErrorValidator.SUCCESS).json(addedUser);
+            } else {
+                res.status(ErrorValidator.SUCCESS).json(existedUser);
+            }
+        } catch (e) {
+            e instanceof Error
+                ? res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError(e.message))
+                : res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError("Unkown Error happened while connecting wallet!"));
         }
     }
 }
