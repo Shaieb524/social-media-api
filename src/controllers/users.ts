@@ -2,6 +2,7 @@ import { Request, Response, Router } from "express";
 import MainController from './main'
 import { UsersServices } from '../services/users'
 import { UsersModel } from '../models/users'
+import { NftServices } from '../services/nft'
 import { NFTModel } from '../models/nft'
 import ErrorValidator from '../utils/error-validator'
 import superheroes from 'superheroes'
@@ -18,6 +19,7 @@ class UsersController extends MainController {
         this.router.route("/:username").get(this.findUserByName);
         this.router.route("/search").post(this.searchUsers);
         this.router.route("/walletConnect/:ref?").post(this.walletConnect);
+        this.router.route("/NFTtag").post(this.tagUserNft);
         this.router.route("/NFTsearch/:tag").get(this.searchNftByTag);
         this.router.route("/TaggedNFTs/:owner").get(this.getTaggedNftsForUser);
     }
@@ -80,6 +82,37 @@ class UsersController extends MainController {
             e instanceof Error
                 ? res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError(e.message))
                 : res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError("Unkown Error happened while connecting wallet!"));
+        }
+    }
+
+    private tagUserNft = async (req: Request, res: Response) => {
+        try {
+            const user = await UsersModel.findOne({walletAddress: req.body.owner})
+            if (!user) {
+                res.status(ErrorValidator.NOT_FOUND).send(ErrorValidator.notFound("User does not exist!"))
+            }
+            else {
+                let nftService = new NftServices(NFTModel)
+                let {owner, tokenId, address, tags} = req.body
+
+                // creaate nft
+                const newNFT  = await nftService.addItem({
+                    owner: owner,
+                    tokenId: tokenId,
+                    address: address,
+                    tags: tags
+                })    
+
+                // update user's nfts
+                const uNFT = await NFTModel.find({ owner: req.body.owner })
+                await user.updateOne({NFTs: uNFT})
+
+                res.status(ErrorValidator.SUCCESS).send(ErrorValidator.success('Nft added successfully!'))
+            }
+        } catch (e) {
+            e instanceof Error
+            ? res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError(e.message))
+            : res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError("Unkown Error happened while getting nft tag"));
         }
     }
 

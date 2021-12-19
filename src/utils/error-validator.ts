@@ -10,7 +10,8 @@ export default class ErrorValidator {
     static METHOD_NOT_ALLOWED = 405;
     static INTERNAL_SERVER_ERROR = 500;
 
-    static success() {
+    static success(message? : string) {
+        CustomLogger.logger.info(`${message}`);
         return {
             code: this.SUCCESS,
             message: "Successful",
@@ -29,7 +30,8 @@ export default class ErrorValidator {
         }
     }
 
-    static unauthorized() {
+    static unauthorized(message? : string) {
+        CustomLogger.logger.error(`${message}`);
         return {
             code: this.UNAUTHORIZED,
             message: "Unauthorized User",
@@ -58,7 +60,8 @@ export default class ErrorValidator {
         }
     }
 
-    static methodNotAllowed() {
+    static methodNotAllowed(message? : string) {
+        CustomLogger.logger.error(`${message}`);
         return {
             code: this.METHOD_NOT_ALLOWED,
             message: "Request Method not allowed",
