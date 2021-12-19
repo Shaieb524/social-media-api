@@ -32,9 +32,6 @@ class UsersController extends MainController {
             res.status(ErrorValidator.SUCCESS).send(user)
         } catch (e) {
             GeneralHelper.checkTryErrorTypeAndResponse(e, 'getting items', res)
-            // e instanceof Error
-            //    ? res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError(e.message))
-            //    : res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError("Unkown Error happened while getting items"));
         }
     }
 
