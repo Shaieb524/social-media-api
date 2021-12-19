@@ -19,7 +19,7 @@ class UsersController extends MainController {
         this.router.route("/search").post(this.searchUsers);
         this.router.route("/walletConnect/:ref?").post(this.walletConnect);
         this.router.route("/NFTsearch/:tag").get(this.searchNftByTag);
-        this.router.route("/TaggedNFTs/:owner").post(this.getTaggedNftsForUser);
+        this.router.route("/TaggedNFTs/:owner").get(this.getTaggedNftsForUser);
     }
 
     private findUserByName = async (req: Request, res: Response) => {
