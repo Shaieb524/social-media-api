@@ -1,5 +1,6 @@
 import { model, Schema } from 'mongoose'
 import { IUsers } from '../interfaces/users'
+import { INft } from '../interfaces/nft'
 
 const UserSchema = new Schema({
     username :{
@@ -49,6 +50,11 @@ const UserSchema = new Schema({
         type: Number,
         default: 0,
     },
+    NFTs: {
+        type: Array,
+        default: []
+    },
+    Newsfeed: Array,
 })
 
 export const UsersModel = model<IUsers>('Users', UserSchema);

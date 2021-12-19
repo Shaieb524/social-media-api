@@ -17,13 +17,14 @@ class UsersController extends MainController {
         this.router.route("/:username").get(this.findUserByName);
         this.router.route("/search").post(this.searchUsers);
         this.router.route("/walletConnect/:ref?").post(this.walletConnect);
+        this.router.route("/TaggedNFTs/:owner").post(this.getTaggedNftsForUser);
     }
 
     private findUserByName = async (req: Request, res: Response) => {
         try {
             const username = req.params.username.toLowerCase()
             const user = await UsersModel.findOne({username : { $regex : new RegExp(username, "i")} });
-            res.send(user)
+            res.status(ErrorValidator.SUCCESS).send(user)
         } catch (e) {
             e instanceof Error
                ? res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError(e.message))
@@ -37,7 +38,7 @@ class UsersController extends MainController {
                 {'username': {$regex: req.body.search, $options: 'i'}},
                 {'walletAddress': {$regex: req.body.search, $options: 'i'}}
             ] });
-            res.send(user)
+            res.status(ErrorValidator.SUCCESS).send(user)
         } catch (e) {
             e instanceof Error
                 ? res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError(e.message))
@@ -77,6 +78,30 @@ class UsersController extends MainController {
             e instanceof Error
                 ? res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError(e.message))
                 : res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError("Unkown Error happened while connecting wallet!"));
+        }
+    }
+
+    private getTaggedNftsForUser = async (req: Request, res: Response) => {
+        try {
+            const owner = req.params.owner
+            const user = await UsersModel.findOne({ walletAddress : owner });
+            
+            if (user) {
+                // const taggedNfts = user.NFTs.filter((nft)=>{
+                //     if(nft.tags.length !== 0){
+                //         return nft.tags
+                //     }
+                // })
+
+                res.status(ErrorValidator.SUCCESS).json(user.NFTs)
+            } else {
+                res.status(ErrorValidator.NOT_FOUND).send(ErrorValidator.notFound(`User ${owner} was not found!`))
+            }
+ 
+        } catch (e) {
+            e instanceof Error
+            ? res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError(e.message))
+            : res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError("Unkown Error happened while getting items"));
         }
     }
 }

@@ -14,8 +14,8 @@ export interface IUsers extends Document {
   posts: Array<[]>
   followers: Array<[]>;
   followings: Array<[]>;
-  linkedURL: Array<[string]>;
+  linkedURL: Array<string>;
   referralCount: number;
-//   Newsfeed: Array[];
-//   NFTs: Array[INft];
+  NFTs: Array<INft>;
+  Newsfeed: Array<INewsfeed>;
 }
