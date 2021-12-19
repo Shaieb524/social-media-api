@@ -5,6 +5,7 @@ import { NewsfeedModel } from '../models/newsfeed'
 import { INewsfeed } from '../interfaces/newsfeed'
 import { UsersModel } from '../models/users'
 import ErrorValidator from '../utils/error-validator'
+import GeneralHelper from '../utils/general-helper'
 
 class NewsfeedController extends MainController {
 
@@ -30,9 +31,7 @@ class NewsfeedController extends MainController {
                 res.status(ErrorValidator.SUCCESS).send(ErrorValidator.success())
             }
         } catch (e) {
-            e instanceof Error
-               ? res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError(e.message))
-               : res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError("Unkown Error happened while getting items"));
+            GeneralHelper.checkTryErrorTypeAndResponse(e, 'creating newsfeed post', res)
         }
     }
 
@@ -53,9 +52,7 @@ class NewsfeedController extends MainController {
             }
             
         } catch (e) {
-            e instanceof Error
-                ? res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError(e.message))
-                : res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError("Unkown Error happened while getNewsfeedByUserName"));
+            GeneralHelper.checkTryErrorTypeAndResponse(e, 'getting newsfeed by name', res)
         }
     }
 

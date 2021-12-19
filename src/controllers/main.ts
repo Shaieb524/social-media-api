@@ -1,5 +1,6 @@
 import { Request, Response, Router } from "express";
 import ErrorValidator from '../utils/error-validator'
+import GeneralHelper from '../utils/general-helper'
 
 export default class MainController {
     public router = Router()
@@ -21,9 +22,7 @@ export default class MainController {
             const items = await this.service.findAll()
             res.status(ErrorValidator.SUCCESS).send(items)
         } catch (e) {
-            e instanceof Error
-               ? res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError(e.message))
-               : res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError("Unkown Error happened while getting items"));
+            GeneralHelper.checkTryErrorTypeAndResponse(e, 'getting all items', res)
         }
     }
 
@@ -32,9 +31,7 @@ export default class MainController {
             const items = await this.service.getRandom(req.body.itemsNo)
             res.status(ErrorValidator.SUCCESS).send(items)
         } catch (e) {
-            e instanceof Error
-               ? res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError(e.message))
-               : res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError("Unkown Error happened while getting items"));
+            GeneralHelper.checkTryErrorTypeAndResponse(e, 'getting random items', res)
         }
     }
 
@@ -43,9 +40,7 @@ export default class MainController {
             const item = await this.service.addItem(req.body)
             res.status(ErrorValidator.SUCCESS).send(item)
         } catch (e) {
-            e instanceof Error
-                ? res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError(e.message))
-                : res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError("Unkown Error happened while adding item"));
+            GeneralHelper.checkTryErrorTypeAndResponse(e, 'getting adding item', res)
         }
     }
 
@@ -54,9 +49,7 @@ export default class MainController {
             const deletedItem = await this.service.deleteItem(req.params.id)
             res.status(ErrorValidator.SUCCESS).send(deletedItem)
         } catch (e) {
-            e instanceof Error
-               ? res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError(e.message))
-               : res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError("Unkown Error happened while deleting item"));
+            GeneralHelper.checkTryErrorTypeAndResponse(e, 'getting deleting item', res)
         }
     }
 
@@ -65,9 +58,7 @@ export default class MainController {
             const updatedItem = await this.service.updateItem(req.params.id, req.body)
             res.status(ErrorValidator.SUCCESS).send(updatedItem)
         } catch (e) {
-            e instanceof Error
-               ? res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError(e.message))
-               : res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError("Unkown Error happened while updating item"));
+            GeneralHelper.checkTryErrorTypeAndResponse(e, 'getting updating item', res)
         }
     }
 

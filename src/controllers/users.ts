@@ -5,6 +5,7 @@ import { UsersModel } from '../models/users'
 import { NftServices } from '../services/nft'
 import { NFTModel } from '../models/nft'
 import ErrorValidator from '../utils/error-validator'
+import GeneralHelper from '../utils/general-helper'
 import superheroes from 'superheroes'
 
 class UsersController extends MainController {
@@ -30,9 +31,10 @@ class UsersController extends MainController {
             const user = await UsersModel.findOne({username : { $regex : new RegExp(username, "i")} });
             res.status(ErrorValidator.SUCCESS).send(user)
         } catch (e) {
-            e instanceof Error
-               ? res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError(e.message))
-               : res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError("Unkown Error happened while getting items"));
+            GeneralHelper.checkTryErrorTypeAndResponse(e, 'getting items', res)
+            // e instanceof Error
+            //    ? res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError(e.message))
+            //    : res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError("Unkown Error happened while getting items"));
         }
     }
 
@@ -44,9 +46,7 @@ class UsersController extends MainController {
             ] });
             res.status(ErrorValidator.SUCCESS).send(user)
         } catch (e) {
-            e instanceof Error
-                ? res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError(e.message))
-                : res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError("Unkown Error happened while getting items"));
+            GeneralHelper.checkTryErrorTypeAndResponse(e, 'searching users', res)
         }
     }
 
@@ -79,9 +79,7 @@ class UsersController extends MainController {
                 res.status(ErrorValidator.SUCCESS).json(existedUser);
             }
         } catch (e) {
-            e instanceof Error
-                ? res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError(e.message))
-                : res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError("Unkown Error happened while connecting wallet!"));
+            GeneralHelper.checkTryErrorTypeAndResponse(e, 'connecting wallet', res)
         }
     }
 
@@ -110,9 +108,7 @@ class UsersController extends MainController {
                 res.status(ErrorValidator.SUCCESS).send(ErrorValidator.success('Nft added successfully!'))
             }
         } catch (e) {
-            e instanceof Error
-            ? res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError(e.message))
-            : res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError("Unkown Error happened while getting nft tag"));
+            GeneralHelper.checkTryErrorTypeAndResponse(e, 'tagging user NFT', res)
         }
     }
 
@@ -122,9 +118,7 @@ class UsersController extends MainController {
                 const nfts = await NFTModel.find({tags: {"$in": [req.params.tag]}}) 
                 if (nfts) res.status(ErrorValidator.SUCCESS).json(nfts)
             } catch (e) {
-                e instanceof Error
-                ? res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError(e.message))
-                : res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError("Unkown Error happened while getting nft tag"));
+                GeneralHelper.checkTryErrorTypeAndResponse(e, 'getting NFT tag', res)
             }
         } else {
             res.status(ErrorValidator.BAD_REQUEST).send(ErrorValidator.badRequest("no nft tag in request"));
@@ -142,16 +136,13 @@ class UsersController extends MainController {
                 //         return nft.tags
                 //     }
                 // })
-
                 res.status(ErrorValidator.SUCCESS).json(user.NFTs)
             } else {
                 res.status(ErrorValidator.NOT_FOUND).send(ErrorValidator.notFound(`User ${owner} was not found!`))
             }
  
         } catch (e) {
-            e instanceof Error
-            ? res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError(e.message))
-            : res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError("Unkown Error happened while getting items"));
+            GeneralHelper.checkTryErrorTypeAndResponse(e, 'getting tagged NFTs', res)
         }
     }
 }
