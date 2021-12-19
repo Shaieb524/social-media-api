@@ -60,7 +60,7 @@ class UsersController extends MainController {
                     rUser.referralCount = rUser.referralCount + 1;
                     await rUser.save();
                 } else {
-                    res.status(404).json("incorrect referral link");
+                    res.status(ErrorValidator.NOT_FOUND).send(ErrorValidator.notFound("incorrect referral link"));
                 }
             }
 
