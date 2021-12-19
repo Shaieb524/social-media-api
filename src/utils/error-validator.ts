@@ -19,7 +19,8 @@ export default class ErrorValidator {
         }
     }
 
-    static badRequest() {
+    static badRequest(message? : string) {
+        CustomLogger.logger.error(`${message}`);
         return {
             code: this.BAD_REQUEST,
             message: "Bad Request!",

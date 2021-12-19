@@ -2,6 +2,7 @@ import { Request, Response, Router } from "express";
 import MainController from './main'
 import { UsersServices } from '../services/users'
 import { UsersModel } from '../models/users'
+import { NFTModel } from '../models/nft'
 import ErrorValidator from '../utils/error-validator'
 import superheroes from 'superheroes'
 
@@ -17,6 +18,7 @@ class UsersController extends MainController {
         this.router.route("/:username").get(this.findUserByName);
         this.router.route("/search").post(this.searchUsers);
         this.router.route("/walletConnect/:ref?").post(this.walletConnect);
+        this.router.route("/NFTsearch/:tag").get(this.searchNftByTag);
         this.router.route("/TaggedNFTs/:owner").post(this.getTaggedNftsForUser);
     }
 
@@ -80,6 +82,21 @@ class UsersController extends MainController {
                 : res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError("Unkown Error happened while connecting wallet!"));
         }
     }
+
+    private searchNftByTag = async (req: Request, res: Response) => {
+        if (req.params.tag) {
+            try {
+                const nfts = await NFTModel.find({tags: {"$in": [req.params.tag]}}) 
+                if (nfts) res.status(ErrorValidator.SUCCESS).json(nfts)
+            } catch (e) {
+                e instanceof Error
+                ? res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError(e.message))
+                : res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError("Unkown Error happened while getting nft tag"));
+            }
+        } else {
+            res.status(ErrorValidator.BAD_REQUEST).send(ErrorValidator.badRequest("no nft tag in request"));
+        }
+    } 
 
     private getTaggedNftsForUser = async (req: Request, res: Response) => {
         try {
