@@ -1,4 +1,4 @@
-import { Request, Response, Router } from "express";
+import { Request, Response } from "express";
 import MainController from './main'
 import { NewsfeedServices } from '../services/newsfeed'
 import { NewsfeedModel } from '../models/newsfeed'

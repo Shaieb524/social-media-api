@@ -1,4 +1,4 @@
-import { Application } from "express";
+import { Application, Request, Response } from "express";
 import mongoose, { ConnectOptions } from 'mongoose'
 import {MONGO_URL} from './constants/constants'
 import bodyParser from "body-parser";
@@ -19,7 +19,10 @@ class App {
     private setConfig() {
         this.app.use(bodyParser.json({ limit: "50mb" }));
         this.app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
-        this.app.use(cors());        
+        this.app.use(cors());  
+        this.app.get('/health-check', (_: Request, res: Response) => {
+            res.status(200).send({message: 'Pong!'})
+        })     
     }
 
     private setMongoConfig() {

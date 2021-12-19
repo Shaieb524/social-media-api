@@ -1,4 +1,4 @@
-import { Request, Response, Router } from "express";
+import { Request, Response } from "express";
 import MainController from './main'
 import { UsersServices } from '../services/users'
 import { UsersModel } from '../models/users'
@@ -91,7 +91,7 @@ class UsersController extends MainController {
                 let {owner, tokenId, address, tags} = req.body
 
                 // creaate nft
-                const newNFT  = await nftService.addItem({
+                await nftService.addItem({
                     owner: owner,
                     tokenId: tokenId,
                     address: address,
