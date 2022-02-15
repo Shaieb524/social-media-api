@@ -20,7 +20,7 @@ class App {
         this.app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
         this.app.use(cors());  
         this.app.get('/health-check', (_: Request, res: Response) => {
-            res.status(200).send({message: 'Pong!'})
+            res.status(200).send({message: 'Pongg!'})
         })     
     }
 
