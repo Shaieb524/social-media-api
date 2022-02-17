@@ -23,6 +23,7 @@ class UsersController extends MainController {
         this.router.route("/NFTtag").post(this.tagUserNft);
         this.router.route("/NFTsearch/:tag").get(this.searchNftByTag);
         this.router.route("/TaggedNFTs/:owner").get(this.getTaggedNftsForUser);
+        this.router.route("/follow").post(this.followUser);
     }
 
     private findUserByName = async (req: Request, res: Response) => {
@@ -73,7 +74,7 @@ class UsersController extends MainController {
                 const addedUser = await this.usersService.addItem(createdUserData)
                 res.status(ErrorValidator.SUCCESS).json(addedUser);
             } else {
-                res.status(ErrorValidator.SUCCESS).json(existedUser);
+                res.status(ErrorValidator.SUCCESS).json({message : 'User already exists!'});
             }
         } catch (e) {
             GeneralHelper.checkTryErrorTypeAndResponse(e, 'connecting wallet', res)
@@ -136,6 +137,25 @@ class UsersController extends MainController {
                 res.status(ErrorValidator.SUCCESS).json(user.NFTs)
             } else {
                 res.status(ErrorValidator.NOT_FOUND).send(ErrorValidator.notFound(`User ${owner} was not found!`))
+            }
+ 
+        } catch (e) {
+            GeneralHelper.checkTryErrorTypeAndResponse(e, 'getting tagged NFTs', res)
+        }
+    }
+
+    private followUser = async (req: Request, res: Response) => {
+        try {
+            let callerUser:any = await UsersModel.findOne({username: req.body.caller})
+            let targetUser:any = await UsersModel.findOne({username: req.body.target})
+
+            if (!callerUser || !targetUser) {
+                res.status(ErrorValidator.BAD_REQUEST).send(ErrorValidator.badRequest("Problem with usersnames!"));
+            } else {
+                callerUser.followings.push(req.body.target)
+                targetUser.followers.push(req.body.caller)    
+                console.log('targetUser.followers : ', targetUser.followers)
+                res.status(ErrorValidator.SUCCESS).send({message : "Follwing done successfully!"})
             }
  
         } catch (e) {
