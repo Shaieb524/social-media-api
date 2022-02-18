@@ -25,6 +25,8 @@ class UsersController extends MainController {
         this.router.route("/TaggedNFTs/:owner").get(this.getTaggedNftsForUser);
         this.router.route("/follow").post(this.followUser);
         this.router.route("/unfollow").post(this.unfollowUser);
+        this.router.route("/get-followers/:id").get(this.getUserFollowers);
+        this.router.route("/get-followings/:id").get(this.getUserFollowings);
     }
 
     private findUserByName = async (req: Request, res: Response) => {
@@ -54,13 +56,13 @@ class UsersController extends MainController {
 
             if (req.query.ref) {
                 const ref = req.query.ref;
-                const rUser = await UsersModel.findOne({ username: ref });
-                if (rUser) {
-                    rUser.referralCount = rUser.referralCount + 1;
-                    await rUser.save();
-                } else {
-                    res.status(ErrorValidator.NOT_FOUND).send(ErrorValidator.notFound("incorrect referral link"));
-                }
+                // const rUser = await UsersModel.findOne({ username: ref });
+                // if (rUser) {
+                //     rUser.referralCount = rUser.referralCount + 1;
+                //     await rUser.save();
+                // } else {
+                //     res.status(ErrorValidator.NOT_FOUND).send(ErrorValidator.notFound("incorrect referral link"));
+                // }
             }
 
             const existedUser = await UsersModel.findOne({ walletAddress: req.body.walletAddress });
@@ -102,7 +104,7 @@ class UsersController extends MainController {
 
                 // update user's nfts
                 const uNFT = await NFTModel.find({ owner: req.body.owner })
-                await user.updateOne({NFTs: uNFT})
+                // await user.updateOne({NFTs: uNFT})
 
                 res.status(ErrorValidator.SUCCESS).send(ErrorValidator.success('Nft added successfully!'))
             }
@@ -114,8 +116,8 @@ class UsersController extends MainController {
     private searchNftByTag = async (req: Request, res: Response) => {
         if (req.params.tag) {
             try {
-                const nfts = await NFTModel.find({tags: {"$in": [req.params.tag]}}) 
-                if (nfts) res.status(ErrorValidator.SUCCESS).json(nfts)
+                // const nfts = await NFTModel.find({tags: {"$in": [req.params.tag]}}) 
+                // if (nfts) res.status(ErrorValidator.SUCCESS).json(nfts)
             } catch (e) {
                 GeneralHelper.checkTryErrorTypeAndResponse(e, 'getting NFT tag', res)
             }
@@ -168,6 +170,32 @@ class UsersController extends MainController {
             }
         } catch (e) {
             GeneralHelper.checkTryErrorTypeAndResponse(e, 'unfollwing user', res)
+        }
+    }
+
+    private getUserFollowers = async (req: Request, res: Response) => {
+        try {
+            const user = await UsersModel.findOne({id : req.params.id});
+            if (user) {
+                res.status(ErrorValidator.SUCCESS).send(user.followers)
+            } else {
+                res.status(ErrorValidator.NOT_FOUND).send({message : "User not found!"})
+            }
+        } catch (e) {
+            GeneralHelper.checkTryErrorTypeAndResponse(e, 'getting followers', res)
+        }
+    }
+
+    private getUserFollowings = async (req: Request, res: Response) => {
+        try {
+            const user = await UsersModel.findOne({id : req.params.id});
+            if (user) {
+                res.status(ErrorValidator.SUCCESS).send(user.followings)
+            } else {
+                res.status(ErrorValidator.NOT_FOUND).send({message : "User not found!"})
+            }
+        } catch (e) {
+            GeneralHelper.checkTryErrorTypeAndResponse(e, 'getting followings', res)
         }
     }
 }
