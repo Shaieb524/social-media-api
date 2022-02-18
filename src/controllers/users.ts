@@ -24,6 +24,7 @@ class UsersController extends MainController {
         // this.router.route("/NFTsearch/:tag").get(this.searchNftByTag);
         this.router.route("/TaggedNFTs/:owner").get(this.getTaggedNftsForUser);
         this.router.route("/follow").post(this.followUser);
+        this.router.route("/unfollow").post(this.unfollowUser);
     }
 
     private findUserByName = async (req: Request, res: Response) => {
@@ -153,7 +154,20 @@ class UsersController extends MainController {
                 res.status(ErrorValidator.BAD_REQUEST).send({message : "Problems with users ids in following"})
             }
         } catch (e) {
-            GeneralHelper.checkTryErrorTypeAndResponse(e, 'getting tagged NFTs', res)
+            GeneralHelper.checkTryErrorTypeAndResponse(e, 'follwing user', res)
+        }
+    }
+
+    private unfollowUser = async (req: Request, res: Response) => {
+        try {
+            let followUserCode = await this.service.unfollowUser(req.body.callerId, req.body.targetId)
+            if (followUserCode == 200) {
+                res.status(ErrorValidator.SUCCESS).send({message : "Unfollwing done successfully!"})
+            } else {
+                res.status(ErrorValidator.BAD_REQUEST).send({message : "Problems with users ids in Unfollwing"})
+            }
+        } catch (e) {
+            GeneralHelper.checkTryErrorTypeAndResponse(e, 'unfollwing user', res)
         }
     }
 }
