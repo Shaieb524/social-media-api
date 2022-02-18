@@ -162,11 +162,11 @@ class UsersController extends MainController {
 
     private unfollowUser = async (req: Request, res: Response) => {
         try {
-            let followUserCode = await this.service.unfollowUser(req.body.callerId, req.body.targetId)
-            if (followUserCode == 200) {
+            let unfollowUserAction = await this.service.unfollowUser(req.body.callerId, req.body.targetId)
+            if (unfollowUserAction.code == 200) {
                 res.status(ErrorValidator.SUCCESS).send({message : "Unfollwing done successfully!"})
             } else {
-                res.status(ErrorValidator.BAD_REQUEST).send({message : "Problems with users ids in Unfollwing"})
+                res.status(ErrorValidator.BAD_REQUEST).send({message : unfollowUserAction.message})
             }
         } catch (e) {
             GeneralHelper.checkTryErrorTypeAndResponse(e, 'unfollwing user', res)
