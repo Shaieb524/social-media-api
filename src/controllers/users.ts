@@ -176,7 +176,6 @@ class UsersController extends MainController {
     private getUserFollowers = async (req: Request, res: Response) => {
         try {
             const user = await UsersModel.findOne({_id : req.params.id});
-            console.log('user : ', user)
             if (user) {
                 res.status(ErrorValidator.SUCCESS).send(user.followers)
             } else {

@@ -9,17 +9,15 @@ export class UsersServices extends MainServices {
         let callerUser:any = await this.serivceModel.findById({_id: callerId})
         let targetUser:any = await this.serivceModel.findById({_id: targetId})
         let followActionResult: object = {}
-        let insertFollowerProblem : boolean = false
 
         if (!callerUser || !targetUser) {
             followActionResult = {code : 400, message: 'Problems with usres IDs'}
         } else {
-            callerUser.followings.includes(targetUser.username) ? insertFollowerProblem = true : callerUser.followings.push(targetUser.username)
-            targetUser.followers.includes(targetUser.username) ? insertFollowerProblem = true : targetUser.followers.push(callerUser.username)
-       
-            if (insertFollowerProblem) {
+            if (callerUser.followings.includes(targetUser.username) || targetUser.followers.includes(targetUser.username)) {
                 followActionResult = {code: 400, message: 'Follow action already exists!'}
             } else {
+                callerUser.followings.push(targetUser.username)
+                targetUser.followers.push(callerUser.username)
                 this.updateItem(callerId, callerUser)
                 this.updateItem(targetId, targetUser)
                 followActionResult = {code : 200, message: 'Follow action was done successfully!'}
