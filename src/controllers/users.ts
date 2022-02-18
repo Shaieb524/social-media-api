@@ -149,11 +149,11 @@ class UsersController extends MainController {
 
     private followUser = async (req: Request, res: Response) => {
         try {
-            let followUserCode = await this.service.followUser(req.body.callerId, req.body.targetId)
-            if (followUserCode == 200) {
+            let followUserAction = await this.service.followUser(req.body.callerId, req.body.targetId)
+            if (followUserAction.code == 200) {
                 res.status(ErrorValidator.SUCCESS).send({message : "Follwing done successfully!"})
             } else {
-                res.status(ErrorValidator.BAD_REQUEST).send({message : "Problems with users ids in following"})
+                res.status(ErrorValidator.BAD_REQUEST).send({message : followUserAction.message})
             }
         } catch (e) {
             GeneralHelper.checkTryErrorTypeAndResponse(e, 'follwing user', res)
@@ -175,7 +175,8 @@ class UsersController extends MainController {
 
     private getUserFollowers = async (req: Request, res: Response) => {
         try {
-            const user = await UsersModel.findOne({id : req.params.id});
+            const user = await UsersModel.findOne({_id : req.params.id});
+            console.log('user : ', user)
             if (user) {
                 res.status(ErrorValidator.SUCCESS).send(user.followers)
             } else {
@@ -188,7 +189,7 @@ class UsersController extends MainController {
 
     private getUserFollowings = async (req: Request, res: Response) => {
         try {
-            const user = await UsersModel.findOne({id : req.params.id});
+            const user = await UsersModel.findOne({_id : req.params.id});
             if (user) {
                 res.status(ErrorValidator.SUCCESS).send(user.followings)
             } else {

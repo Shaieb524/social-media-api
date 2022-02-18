@@ -9,4 +9,6 @@ export default class GeneralHelper {
         else 
             return res.status(ErrorValidator.INTERNAL_SERVER_ERROR).send(ErrorValidator.internalServerError(specificationMessage))
     }
+
+    
 }
