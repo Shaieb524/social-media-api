@@ -5,7 +5,6 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import express from "express";
 import { MODELS_PACKAGE } from './constants/constants'
-
 class App {
     public app: Application;
 
@@ -21,7 +20,7 @@ class App {
         this.app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
         this.app.use(cors());  
         this.app.get('/health-check', (_: Request, res: Response) => {
-            res.status(200).send({message: 'Pong!'})
+            res.status(200).send({message: 'Pongg!'})
         })     
     }
 
