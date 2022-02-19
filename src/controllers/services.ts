@@ -13,7 +13,6 @@ export default class ServicesController {
 
     public sendEmail = async (req: Request, res: Response) => {
         await MailChimpServices.mailSender(req.body.mailSender, req.body.mailReceiver, req.body.mailTitle, req.body.mailBody)
-        
-        res.status(ErrorValidator.SUCCESS).send({message : "Email is sent!"})
+        res.status(ErrorValidator.SUCCESS).send({message : 'Email was sent!'})
     }
 }

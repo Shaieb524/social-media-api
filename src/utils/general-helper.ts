@@ -1,5 +1,8 @@
 import ErrorValidator from '../utils/error-validator'
 import { Response } from "express";
+import superheroes from 'superheroes'
+import pokemon from 'pokemon'
+import supervillains from 'supervillains'
 
 export default class GeneralHelper {
 
@@ -79,4 +82,12 @@ export default class GeneralHelper {
     }
 
     public static getDistinctValuesFromArray = (value: any, index: number, self: any[]) => self.indexOf(value) === index
+
+    public static generateRandomUsername = () => {
+        let namesProvidersArray = [superheroes, pokemon, supervillains]
+        let choosenProvider = namesProvidersArray[Math.floor(Math.random()*namesProvidersArray.length)]
+        let randomNumber = Math.floor(Math.random()*9999)
+
+        return choosenProvider.random() + randomNumber
+    }
 }

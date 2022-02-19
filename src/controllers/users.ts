@@ -6,7 +6,6 @@ import { NftServices } from '../services/nft'
 import { NFTModel } from '../models/nft'
 import ErrorValidator from '../utils/error-validator'
 import GeneralHelper from '../utils/general-helper'
-import superheroes from 'superheroes'
 
 class UsersController extends MainController {
     
@@ -67,7 +66,7 @@ class UsersController extends MainController {
 
             const existedUser = await UsersModel.findOne({ walletAddress: req.body.walletAddress });
             if (!existedUser) {
-                const assignedUsername = superheroes.random();
+                const assignedUsername = GeneralHelper.generateRandomUsername();
                 const createdUserData = {
                     walletAddress: req.body.walletAddress,
                     isWalletConnected: true,
