@@ -16,6 +16,8 @@ import UsersController from '../controllers/users'
 import { UsersServices } from "../services/users"
 import { UsersModel } from "../models/users"
 
+import ServicesController from '../controllers/services'
+
 export const MODELS_PACKAGE = [
     {
         apiPath: 'newsfeed',
@@ -28,5 +30,9 @@ export const MODELS_PACKAGE = [
     {
         apiPath: 'users',
         modelController: new UsersController(new UsersServices(UsersModel))
+    },
+    {
+        apiPath: 'services',
+        modelController: new ServicesController()
     }
 ]

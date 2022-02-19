@@ -1,9 +1,10 @@
+import CustomLogger from './custom-logger'
 import { MANDRILL_KEY } from '../constants/constants'
 const mandrill = require('node-mandrill')(MANDRILL_KEY);
 
-export class MailChimpServices {
+export default class MailChimpServices {
 
-    public mailSender(senderMail : string, receiverMail: string, mailSubject: string, mailMainBody: string) {
+    public static mailSender(senderMail : string, receiverMail: string, mailSubject: string, mailMainBody: string) {
         mandrill('/messages/send', {
             message: {
                 to: [{email: `${receiverMail}`}],
@@ -13,8 +14,13 @@ export class MailChimpServices {
             }
         }, function(error : any, response : any)
         {
-            if (error) console.log( JSON.stringify(error) );
-            else console.log(response);
+            if (error) {
+                CustomLogger.logger.error(JSON.stringify(error));
+            } else {
+                CustomLogger.logger.info(response);
+            }
         });
     }
 }
+
+

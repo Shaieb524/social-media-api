@@ -5,6 +5,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import express from "express";
 import { MODELS_PACKAGE } from './constants/constants'
+
 class App {
     public app: Application;
 
