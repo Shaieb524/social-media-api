@@ -55,13 +55,13 @@ class UsersController extends MainController {
 
             if (req.query.ref) {
                 const ref = req.query.ref;
-                // const rUser = await UsersModel.findOne({ username: ref });
-                // if (rUser) {
-                //     rUser.referralCount = rUser.referralCount + 1;
-                //     await rUser.save();
-                // } else {
-                //     res.status(ErrorValidator.NOT_FOUND).send(ErrorValidator.notFound("incorrect referral link"));
-                // }
+                const rUser = await UsersModel.findOne({ username: ref });
+                if (rUser) {
+                    rUser.referralCount = rUser.referralCount + 1;
+                    await rUser.save();
+                } else {
+                    res.status(ErrorValidator.NOT_FOUND).send(ErrorValidator.notFound("incorrect referral link"));
+                }
             }
 
             const existedUser = await UsersModel.findOne({ walletAddress: req.body.walletAddress });
@@ -103,7 +103,7 @@ class UsersController extends MainController {
 
                 // update user's nfts
                 const uNFT = await NFTModel.find({ owner: req.body.owner })
-                // await user.updateOne({NFTs: uNFT})
+                await user.updateOne({NFTs: uNFT})
 
                 res.status(ErrorValidator.SUCCESS).send(ErrorValidator.success('Nft added successfully!'))
             }
@@ -115,8 +115,8 @@ class UsersController extends MainController {
     private searchNftByTag = async (req: Request, res: Response) => {
         if (req.params.tag) {
             try {
-                // const nfts = await NFTModel.find({tags: {"$in": [req.params.tag]}}) 
-                // if (nfts) res.status(ErrorValidator.SUCCESS).json(nfts)
+                const nfts = await NFTModel.find({tags: {"$in": [req.params.tag]}}) 
+                if (nfts) res.status(ErrorValidator.SUCCESS).json(nfts)
             } catch (e) {
                 GeneralHelper.checkTryErrorTypeAndResponse(e, 'getting NFT tag', res)
             }
