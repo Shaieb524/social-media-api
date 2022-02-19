@@ -176,20 +176,32 @@ class UsersController extends MainController {
         try {
             const user = await UsersModel.findOne({_id : req.params.id});
             if (user) {
-                res.status(ErrorValidator.SUCCESS).send(user.followers)
+                let followesProfiles: any = []
+                for (const follower of user.followers) {
+                    let userProfile = await UsersModel.findOne({username : follower });
+                    followesProfiles.push(userProfile)
+                }
+                res.status(ErrorValidator.SUCCESS).send(followesProfiles)
             } else {
                 res.status(ErrorValidator.NOT_FOUND).send({message : "User not found!"})
             }
         } catch (e) {
             GeneralHelper.checkTryErrorTypeAndResponse(e, 'getting followers', res)
         }
+
+
     }
 
     private getUserFollowings = async (req: Request, res: Response) => {
         try {
             const user = await UsersModel.findOne({_id : req.params.id});
             if (user) {
-                res.status(ErrorValidator.SUCCESS).send(user.followings)
+                let followingsProfiles: any = []
+                for (const following of user.followings) {
+                    let userProfile = await UsersModel.findOne({username : following });
+                    followingsProfiles.push(userProfile)
+                }
+                res.status(ErrorValidator.SUCCESS).send(followingsProfiles)
             } else {
                 res.status(ErrorValidator.NOT_FOUND).send({message : "User not found!"})
             }
