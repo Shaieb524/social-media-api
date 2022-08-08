@@ -1,13 +1,14 @@
-const mongoose = require('mongoose');
+import { model, Schema } from 'mongoose'
+import { INft } from '../interfaces/nft'
 
-const NFTSchema = new mongoose.Schema({
+const NFTSchema = new Schema({
     address :{
         type: String,
     },
     tokenId:{
         type: String,
     },
-    owner :{
+    owner: {
         type: String,
     },
     tags: {
@@ -16,4 +17,4 @@ const NFTSchema = new mongoose.Schema({
     },
 })
 
-module.exports = mongoose.model('NFTs', NFTSchema);
+export const NFTModel = model<INft>("NFTs", NFTSchema);

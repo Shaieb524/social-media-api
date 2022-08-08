@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema
-const NFTs = require('./NFT').schema
-const Newsfeed = require('./Newsfeed').schema
+import { model, Schema } from 'mongoose'
+import { IUsers } from '../interfaces/users'
+import { INft } from '../interfaces/nft'
+
 const UserSchema = new Schema({
     username :{
         type: String,
@@ -19,6 +19,7 @@ const UserSchema = new Schema({
     },
     email :{
         type: String,
+        unique: true,
     },
     profilePic : {
         type: String,
@@ -45,16 +46,15 @@ const UserSchema = new Schema({
         type: Array,
         default: [],
     },
-    // referralLink: {
-    //     type: String,
-    //     unique: true,
-    // },
     referralCount:{
         type: Number,
         default: 0,
     },
-    NFTs:[NFTs],
-    Newsfeed: [Newsfeed],
+    NFTs: {
+        type: Array,
+        default: []
+    },
+    Newsfeed: Array,
 })
 
-module.exports = mongoose.model('Users', UserSchema);
+export const UsersModel = model<IUsers>('Users', UserSchema);
